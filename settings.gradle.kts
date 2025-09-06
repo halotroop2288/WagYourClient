@@ -2,12 +2,11 @@ pluginManagement {
     repositories {
         mavenLocal()
         maven("https://maven.wagyourtail.xyz/releases")
-        maven("https://maven.jemnetworks.com/snapshots")
+        maven("https://maven.wagyourtail.xyz/snapshots")
         mavenCentral()
         gradlePluginPortal()
     }
 }
-
 
 rootProject.name = "WagYourClient"
 

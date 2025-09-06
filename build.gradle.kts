@@ -1,19 +1,12 @@
-import xyz.wagyourtail.unimined.api.task.GenSourcesTask
-
 plugins {
-    id("java")
-    id("xyz.wagyourtail.unimined") version "1.1.0"
-    id("xyz.wagyourtail.patchbase-creator") version "1.0.0"
+    id("xyz.wagyourtail.unimined") version "1.3.15"
+	id("xyz.wagyourtail.patchbase") version "1.1.0-SNAPSHOT"
     `maven-publish`
 }
 
-version = if (project.hasProperty("version_snapshot")) project.properties["version"] as String + "-SNAPSHOT" else project.properties["version"] as String
-group = project.properties["maven_group"] as String
-
-base {
-    archivesName.set(project.properties["archives_base_name"] as String)
-}
-
+version = "${project.properties["version"]}" + if (project.hasProperty("version_snapshot")) "-SNAPSHOT" else ""
+base.archivesName = "${project.properties["archives_base_name"]}"
+group = "${project.properties["maven_group"]}"
 
 repositories {
     mavenCentral()
@@ -26,31 +19,29 @@ unimined.minecraft {
         mojmap()
     }
 
-    jarMod {
-    }
-}
+	jarMod()
 
-patchbase.patchBaseCreator(sourceSets.main.get())
+	source {
+		// Always pin your source generator to a specific version to get consistent results!
+		sourceGenerator.generator("org.vineflower:vineflower:1.11.0")
+		sourceGenerator.args = mutableListOf("--indent-string=\t")
+	}
 
-tasks.named<GenSourcesTask>("genSources") {
-    args.add(0, "-ind=    ")
-}
+	// Pin all of your settings in case the defaults change!
+	patchbase {
+		minimizePatch = false
+		trimWhitespace = false
+		diffContextSize = 3
 
-dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.9.1"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-}
-
-tasks.test {
-    useJUnitPlatform()
+		patchBaseCreator(this@minecraft.sourceSet)
+	}
 }
 
 publishing {
-
     publications {
         create<MavenPublication>("maven") {
             groupId = project.group as String
-            artifactId = project.properties["archives_base_name"] as String? ?: project.name
+            artifactId = "${project.properties["archives_base_name"]}"
             version = project.version as String
 
             artifact(tasks.named("createClassPatch").get()) {
