@@ -1,6 +1,6 @@
 plugins {
-    id("xyz.wagyourtail.unimined") version "1.3.15"
-	id("xyz.wagyourtail.patchbase") version "1.1.0-SNAPSHOT"
+    id("xyz.wagyourtail.unimined") version "1.4.2"
+	id("xyz.wagyourtail.patchbase") version "1.2.0-SNAPSHOT"
     `maven-publish`
 }
 
